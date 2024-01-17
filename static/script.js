@@ -26,53 +26,55 @@ let CONTEXT=null;
 let SCALER = 1;
 let SIZE={x:0,y:0,width:0,height:0};
 
+let videoSelect = null;
+
 const main = () => {
     console.log("loaded");
 
     CANVAS=document.getElementById("camerabox");
     CONTEXT=CANVAS.getContext("2d");    
 
-    let prom = navigator.mediaDevices.getUserMedia({video:true});
+    // navigator.mediaDevices.getUserMedia({video:true})
+    //     .then((signal)=>{
+    //         window.signal_=signal
+    //         VIDEO=document.createElement("video");
+    //         VIDEO.srcObject=signal;
+    //         VIDEO.play();
 
-    // # get access to camera content
-    prom.then((signal)=>{
-        window.signal_=signal
-        VIDEO=document.createElement("video");
-        VIDEO.srcObject=signal;
-        VIDEO.play();
+    //         VIDEO.onloadeddata=function(){
+    //             handleResize();
+    //             // window.addEventListener('resize', handleResize);        
 
-        VIDEO.onloadeddata=function(){
-            handleResize();
-            // window.addEventListener('resize', handleResize);         
+    //             updateCanvas();
+    //         }        
+    //     }).catch((err)=>{
+    //         alert("Camera error: "+err);
+    //     });
 
-            updateCanvas();
-        }        
-    }).catch((err)=>{
-        alert("Camera error: "+err);
-    })
+    videoSelect = document.querySelector('select#videoSource');
+    // getDevices().then(deviceInfos=>{
+    //     window.deviceInfos = deviceInfos; // make available globally
+    //     console.log('Available input and output devices:', deviceInfos);
 
-    var videoSelect = document.querySelector('select#videoSource');
-    getDevices().then(deviceInfos=>{
-        window.deviceInfos = deviceInfos; // make available globally
-        console.log('Available input and output devices:', deviceInfos);
-
-        for (const deviceInfo of deviceInfos) {
-            const option = document.createElement('option');
-            option.value = deviceInfo.deviceId;
+    //     for (const deviceInfo of deviceInfos) {
+    //         const option = document.createElement('option');
+    //         option.value = deviceInfo.deviceId;
         
-            if (deviceInfo.kind === 'videoinput') {
-                option.text = deviceInfo.label || `${videoSelect.length + 1} сamera`;
-                videoSelect.appendChild(option);
+    //         if (deviceInfo.kind === 'videoinput') {
+    //             option.text = deviceInfo.label || `${videoSelect.length + 1} сamera`;
+    //             videoSelect.appendChild(option);
 
                 
-            }
-        }
-    });
+    //         }
+    //     }
+    // });
+    getAvailableMedia();
+
 
     show_cams();
     
+    // TAKE BUTTON
     take_button = document.getElementById("take");
-
     take_button.addEventListener('click', function() {
         // take snapshot
         CONTEXT.drawImage(VIDEO,
@@ -108,16 +110,16 @@ const handleResize = () => {
 }
 
 const updateCanvas = () => {    
-    CONTEXT.drawImage(
-        VIDEO, 
-        0, 0,
-        window.innerWidth, window.innerHeight
-    );
-    CONTEXT.drawImage(
-        VIDEO, 
-        0, 0,
-        VIDEO.videoWidth, VIDEO.videoHeight
-    );
+    // CONTEXT.drawImage(
+    //     VIDEO, 
+    //     0, 0,
+    //     window.innerWidth, window.innerHeight
+    // );
+    // CONTEXT.drawImage(
+    //     VIDEO, 
+    //     0, 0,
+    //     VIDEO.videoWidth, VIDEO.videoHeight
+    // );
     CONTEXT.drawImage(VIDEO, 
         SIZE.x, SIZE.y,
         SIZE.width, SIZE.height
@@ -204,4 +206,60 @@ const show_cams = () => {
     } else {
         console.error('getUserMedia is not supported in this browser.');
     }
+}
+
+function getAvailableMedia() {
+    navigator.mediaDevices.enumerateDevices()
+        .then(devices => {
+            // Filter only video input devices (cameras)
+            const videoDevices = devices.filter(device => device.kind === 'videoinput');
+
+            // Populate the cameraSelector dropdown with available cameras
+            videoDevices.forEach(device => {
+                const option = document.createElement('option');
+                option.value = device.deviceId;
+                option.text = device.label || `Camera ${videoSelect.options.length + 1}`;
+                videoSelect.add(option);
+            });
+
+            // Add event listener to update camera stream when selection changes
+            videoSelect.addEventListener('change', () => {
+                const selectedDeviceId = videoSelect.value;
+                startCamera(selectedDeviceId);
+            });
+
+            // Start the default camera stream
+            if (videoDevices.length > 0) {
+                const defaultDeviceId = videoDevices[0].deviceId;
+                startCamera(defaultDeviceId);
+            }
+        })
+        .catch(error => {
+            console.error('Error accessing devices:', error);
+        });
+}
+
+
+function startCamera(deviceId) {
+    const constraints = {
+        video: {
+            deviceId: deviceId
+        }
+    };
+
+    navigator.mediaDevices.getUserMedia(constraints)
+        .then(stream => {            
+            VIDEO=document.createElement("video");
+            VIDEO.srcObject=stream;
+            VIDEO.play();
+
+            VIDEO.onloadeddata=function(){
+                handleResize();
+                updateCanvas();
+            }  
+        })
+        .catch(error => {
+            alert("Camera error: "+err);
+            console.error('Error accessing camera:', error);
+        });
 }
