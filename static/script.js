@@ -1,20 +1,3 @@
-let previewImage = (event) => {
-    let image = document.getElementById("preview_img");
-    let input = event.target
-    console.log(input)
-    if (input.files && input.files[0]) {
-        var reader = new FileReader();
-        reader.onload = function(e) {
-           image.src = e.target.result;
-        }
-        reader.readAsDataURL(input.files[0]);
-    }
-}
-
-
-
-
-
 window.onload = function() {
     main();
 };
@@ -39,11 +22,10 @@ const main = () => {
     take_button = document.getElementById("take");
     nextButton = document.getElementById('changemedia');
 
-    getAvailableMedia();
+    // populate html selector and start camera
+    getAvailableMedia();    
     
-    
-    // TAKE Button
-    
+    // TAKE Button    
     take_button.addEventListener('click', function() {
         // take snapshot
         CONTEXT.drawImage(VIDEO,
@@ -61,8 +43,7 @@ const main = () => {
         toggleVideoPlayback();
     });
 
-    // CHANGE MEDIA / NEXT Button
-    
+    // CHANGE MEDIA / NEXT Button    
     nextButton.addEventListener('click', () => {
         // Get the current selected index
         const currentIndex = videoSelect.selectedIndex;
@@ -76,7 +57,7 @@ const main = () => {
         startCamera(videoSelect.value);
     });
 
-}
+};
 
 const handleResize = () => {
     let resizer=SCALER*Math.min(
@@ -92,49 +73,21 @@ const handleResize = () => {
 
     // SIZE.x = window.innerWidth/2 - SIZE.width/2;
     // SIZE.y = window.innerHeight/2 - SIZE.height/2;
-}
+};
 
 const updateCanvas = () => {    
-    // CONTEXT.drawImage(
-    //     VIDEO, 
-    //     0, 0,
-    //     window.innerWidth, window.innerHeight
-    // );
-    // CONTEXT.drawImage(
-    //     VIDEO, 
-    //     0, 0,
-    //     VIDEO.videoWidth, VIDEO.videoHeight
-    // );
     CONTEXT.drawImage(VIDEO, 
         SIZE.x, SIZE.y,
         SIZE.width, SIZE.height
     );    
-
     window.requestAnimationFrame(updateCanvas);
-}
-
-
-
-// getStream().then(getDevices).then(gotDevices);
-
-function getDevices() {
-    // Check if the browser supports navigator.mediaDevices.enumerateDevices
-    if (navigator.mediaDevices && navigator.mediaDevices.enumerateDevices) {
-        return navigator.mediaDevices.enumerateDevices();
-    } else {
-        console.error('mediaDevices is not supported in this browser.');
-        return null;
-    }
-}
-
-
+};
 
 const retake = () => {
     const snap = document.getElementById("snap");
     snap.setAttribute("hidden", "true");
     toggleVideoPlayback();
-}
-
+};
 
 const toggleVideoPlayback = () => {
     if (VIDEO.paused) {
@@ -146,53 +99,6 @@ const toggleVideoPlayback = () => {
     }
 };
 
-
-
-
-const show_cams = () => {
-    // Check if the browser supports navigator.mediaDevices.enumerateDevices
-    if (navigator.mediaDevices && navigator.mediaDevices.enumerateDevices) {
-        // Define custom constraints to include both front and rear cameras
-        // const constraints = {
-        //     video: {
-        //         facingMode: { exact: 'environment' } 
-        //         // 'environment' for rear camera, 
-        //         // 'user' for front camera
-        //     }
-        // };
-
-        const videolist = document.querySelector('#list-devices');
-
-        // Call getUserMedia with the custom constraints
-        navigator.mediaDevices.getUserMedia({ video:{} })
-            .then(stream => {
-                // Access the stream to get device information                
-                const devices = stream.getVideoTracks();
-                window.alldevices_ = devices;
-
-                devices.forEach(device => {
-                    let deviceid = device.getSettings().deviceId;
-                    console.log('Device ID:', deviceid);
-                    console.log('Device Label:', device.label);
-
-                    const li = document.createElement('li');
-
-                    li.textContent = "\nLabel: " + device.label + "\nfacingMode: " + device.getSettings().facingMode;
-
-                    videolist.appendChild(li);
-                    console.log(videolist);
-                });
-
-                // You can use the device information as needed
-            })
-            .catch(error => {
-                console.error('Error accessing devices:', error);
-            });
-    } else {
-        console.error('getUserMedia is not supported in this browser.');
-    }
-}
-
 function getAvailableMedia() {
     navigator.mediaDevices.enumerateDevices()
         .then(devices => {
@@ -203,10 +109,22 @@ function getAvailableMedia() {
             videoDevices.forEach(device => {
                 const option = document.createElement('option');
                 option.value = device.deviceId;
-                option.text = device.label || `Camera ${videoSelect.options.length + 1}`;
+                let label;
+                if (device.label.toLowerCase().includes('back')) {
+                    label = 'back';
+                } else if (device.label.toLowerCase().includes('front')) {
+                    label = 'front';
+                } else {
+                    label = 'integrated';
+                }
+
+                option.text = `src: ${label} [${videoSelect.options.length + 1}]`
+                
+                // device.label || `Camera ${videoSelect.options.length + 1}`;
                 videoSelect.add(option);
             });
 
+            console.log(videoSelect)
             // Add event listener to update camera stream when selection changes
             videoSelect.addEventListener('change', () => {
                 const selectedDeviceId = videoSelect.value;
@@ -214,10 +132,13 @@ function getAvailableMedia() {
             });
 
             // Start the default camera stream
-            if (videoDevices.length > 0) {
-                const defaultDeviceId = videoDevices[0].deviceId;
-                startCamera(defaultDeviceId);
+            if (videoDevices.length > 0) {   
+                // Find the back camera (if available)
+                const backCamera = videoDevices.find(device => device.label.toLowerCase().includes('back'));
 
+                const defaultDeviceId = backCamera ? backCamera.deviceId : videoDevices[0].deviceId;
+
+                startCamera(defaultDeviceId);
 
                 if (videoDevices.length == 1) {
                     nextButton.setAttribute("disabled", true)
@@ -227,7 +148,7 @@ function getAvailableMedia() {
         .catch(error => {
             console.error('Error accessing devices:', error);
         });
-}
+};
 
 
 function startCamera(deviceId) {
@@ -248,16 +169,15 @@ function startCamera(deviceId) {
                 updateCanvas();
             }  
 
-            setSourceText(stream.getVideoTracks()[0].label);
-            console.log(stream)
+            setSourceText(videoSelect.options[videoSelect.selectedIndex].text);
         })
         .catch(error => {
             alert("Camera error: "+err);
             console.error('Error accessing camera:', error);
         });
-}
+};
 
 
 function setSourceText(text) {
     document.getElementById('videoSourceText').value = text;
-}
+};
