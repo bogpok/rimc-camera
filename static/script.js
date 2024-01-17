@@ -136,6 +136,8 @@ function getAvailableMedia() {
                 // Find the back camera (if available)
                 const backCamera = videoDevices.find(device => device.label.toLowerCase().includes('back'));
 
+                if (backCamera) videoSelect.selectedIndex = 1;
+
                 const defaultDeviceId = backCamera ? backCamera.deviceId : videoDevices[0].deviceId;
 
                 startCamera(defaultDeviceId);
