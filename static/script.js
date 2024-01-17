@@ -51,7 +51,6 @@ const main = () => {
     })
 
     var videoSelect = document.querySelector('select#videoSource');
-    const videolist = document.querySelector('#list-devices');
     getDevices().then(deviceInfos=>{
         window.deviceInfos = deviceInfos; // make available globally
         console.log('Available input and output devices:', deviceInfos);
@@ -64,15 +63,12 @@ const main = () => {
                 option.text = deviceInfo.label || `${videoSelect.length + 1} сamera`;
                 videoSelect.appendChild(option);
 
-                const li = document.createElement('li');
-                li.textContent = `${videolist.length + 1} сamera` + deviceInfo.deviceId + "|" + deviceInfo.label;
-                videolist.appendChild(li);
-                console.log(videolist);
+                
             }
         }
     });
 
-    
+    show_cams();
     
     take_button = document.getElementById("take");
 
@@ -134,7 +130,13 @@ const updateCanvas = () => {
 // getStream().then(getDevices).then(gotDevices);
 
 function getDevices() {
-    return navigator.mediaDevices.enumerateDevices();
+    // Check if the browser supports navigator.mediaDevices.enumerateDevices
+    if (navigator.mediaDevices && navigator.mediaDevices.enumerateDevices) {
+        return navigator.mediaDevices.enumerateDevices();
+    } else {
+        console.error('mediaDevices is not supported in this browser.');
+        return null;
+    }
 }
 
 
@@ -155,3 +157,46 @@ const toggleVideoPlayback = () => {
         document.getElementById("retake").removeAttribute("disabled");
     }
 };
+
+
+
+
+const show_cams = () => {
+    // Check if the browser supports navigator.mediaDevices.enumerateDevices
+    if (navigator.mediaDevices && navigator.mediaDevices.enumerateDevices) {
+        // Define custom constraints to include both front and rear cameras
+        const constraints = {
+            video: {
+                facingMode: { exact: 'environment' } 
+                // 'environment' for rear camera, 
+                // 'user' for front camera
+            }
+        };
+
+        const videolist = document.querySelector('#list-devices');
+
+        // Call getUserMedia with the custom constraints
+        navigator.mediaDevices.getUserMedia(constraints)
+            .then(stream => {
+                // Access the stream to get device information
+                const devices = stream.getVideoTracks();
+                devices.forEach(device => {
+                    let deviceid = device.getSettings().deviceId;
+                    console.log('Device ID:', deviceid);
+                    console.log('Device Label:', device.label);
+
+                    const li = document.createElement('li');
+                    li.textContent = `${videolist.length + 1} сamera` + deviceid + "|" + device.label;
+                    videolist.appendChild(li);
+                    console.log(videolist);
+                });
+
+                // You can use the device information as needed
+            })
+            .catch(error => {
+                console.error('Error accessing devices:', error);
+            });
+    } else {
+        console.error('getUserMedia is not supported in this browser.');
+    }
+}
