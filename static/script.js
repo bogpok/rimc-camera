@@ -177,7 +177,7 @@ const show_cams = () => {
         const videolist = document.querySelector('#list-devices');
 
         // Call getUserMedia with the custom constraints
-        navigator.mediaDevices.getUserMedia({video:true})
+        navigator.mediaDevices.getUserMedia({ video:{} })
             .then(stream => {
                 // Access the stream to get device information                
                 const devices = stream.getVideoTracks();
@@ -190,7 +190,7 @@ const show_cams = () => {
 
                     const li = document.createElement('li');
 
-                    li.textContent = "id: " + deviceid + "\nLabel: " + device.label + "\nfacingMode: " + device.facingMode;
+                    li.textContent = "\nLabel: " + device.label + "\nfacingMode: " + device.facingMode;
 
                     videolist.appendChild(li);
                     console.log(videolist);
