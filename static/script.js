@@ -72,6 +72,8 @@ const main = () => {
 
         // Set the selectedIndex to the next index
         videoSelect.selectedIndex = nextIndex;
+
+        startCamera(videoSelect.value);
     });
 
 }
