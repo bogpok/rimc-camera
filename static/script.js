@@ -27,54 +27,23 @@ let SCALER = 1;
 let SIZE={x:0,y:0,width:0,height:0};
 
 let videoSelect = null;
+let nextButton = null;
 
 const main = () => {
     console.log("loaded");
 
     CANVAS=document.getElementById("camerabox");
-    CONTEXT=CANVAS.getContext("2d");    
-
-    // navigator.mediaDevices.getUserMedia({video:true})
-    //     .then((signal)=>{
-    //         window.signal_=signal
-    //         VIDEO=document.createElement("video");
-    //         VIDEO.srcObject=signal;
-    //         VIDEO.play();
-
-    //         VIDEO.onloadeddata=function(){
-    //             handleResize();
-    //             // window.addEventListener('resize', handleResize);        
-
-    //             updateCanvas();
-    //         }        
-    //     }).catch((err)=>{
-    //         alert("Camera error: "+err);
-    //     });
+    CONTEXT=CANVAS.getContext("2d");  
 
     videoSelect = document.querySelector('select#videoSource');
-    // getDevices().then(deviceInfos=>{
-    //     window.deviceInfos = deviceInfos; // make available globally
-    //     console.log('Available input and output devices:', deviceInfos);
-
-    //     for (const deviceInfo of deviceInfos) {
-    //         const option = document.createElement('option');
-    //         option.value = deviceInfo.deviceId;
-        
-    //         if (deviceInfo.kind === 'videoinput') {
-    //             option.text = deviceInfo.label || `${videoSelect.length + 1} сamera`;
-    //             videoSelect.appendChild(option);
-
-                
-    //         }
-    //     }
-    // });
-    getAvailableMedia();
-
-
-    show_cams();
-    
-    // TAKE BUTTON
     take_button = document.getElementById("take");
+    nextButton = document.getElementById('changemedia');
+
+    getAvailableMedia();
+    
+    
+    // TAKE Button
+    
     take_button.addEventListener('click', function() {
         // take snapshot
         CONTEXT.drawImage(VIDEO,
@@ -91,6 +60,20 @@ const main = () => {
 
         toggleVideoPlayback();
     });
+
+    // CHANGE MEDIA / NEXT Button
+    
+    nextButton.addEventListener('click', () => {
+        // Get the current selected index
+        const currentIndex = videoSelect.selectedIndex;
+
+        // Calculate the next index, and loop back to the beginning if necessary
+        const nextIndex = (currentIndex + 1) % videoSelect.options.length;
+
+        // Set the selectedIndex to the next index
+        videoSelect.selectedIndex = nextIndex;
+    });
+
 }
 
 const handleResize = () => {
@@ -192,7 +175,7 @@ const show_cams = () => {
 
                     const li = document.createElement('li');
 
-                    li.textContent = "\nLabel: " + device.label + "\nfacingMode: " + device.facingMode;
+                    li.textContent = "\nLabel: " + device.label + "\nfacingMode: " + device.getSettings().facingMode;
 
                     videolist.appendChild(li);
                     console.log(videolist);
@@ -232,6 +215,11 @@ function getAvailableMedia() {
             if (videoDevices.length > 0) {
                 const defaultDeviceId = videoDevices[0].deviceId;
                 startCamera(defaultDeviceId);
+
+
+                if (videoDevices.length == 1) {
+                    nextButton.setAttribute("disabled", true)
+                }
             }
         })
         .catch(error => {
@@ -257,9 +245,17 @@ function startCamera(deviceId) {
                 handleResize();
                 updateCanvas();
             }  
+
+            setSourceText(stream.getVideoTracks()[0].label);
+            console.log(stream)
         })
         .catch(error => {
             alert("Camera error: "+err);
             console.error('Error accessing camera:', error);
         });
+}
+
+
+function setSourceText(text) {
+    document.getElementById('videoSourceText').value = text;
 }
