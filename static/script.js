@@ -36,6 +36,7 @@ const main = () => {
 
     // # get access to camera content
     prom.then((signal)=>{
+        window.signal_=signal
         VIDEO=document.createElement("video");
         VIDEO.srcObject=signal;
         VIDEO.play();
@@ -165,28 +166,32 @@ const show_cams = () => {
     // Check if the browser supports navigator.mediaDevices.enumerateDevices
     if (navigator.mediaDevices && navigator.mediaDevices.enumerateDevices) {
         // Define custom constraints to include both front and rear cameras
-        const constraints = {
-            video: {
-                facingMode: { exact: 'environment' } 
-                // 'environment' for rear camera, 
-                // 'user' for front camera
-            }
-        };
+        // const constraints = {
+        //     video: {
+        //         facingMode: { exact: 'environment' } 
+        //         // 'environment' for rear camera, 
+        //         // 'user' for front camera
+        //     }
+        // };
 
         const videolist = document.querySelector('#list-devices');
 
         // Call getUserMedia with the custom constraints
-        navigator.mediaDevices.getUserMedia(constraints)
+        navigator.mediaDevices.getUserMedia({video:true})
             .then(stream => {
-                // Access the stream to get device information
+                // Access the stream to get device information                
                 const devices = stream.getVideoTracks();
+                window.alldevices_ = devices;
+
                 devices.forEach(device => {
                     let deviceid = device.getSettings().deviceId;
                     console.log('Device ID:', deviceid);
                     console.log('Device Label:', device.label);
 
                     const li = document.createElement('li');
-                    li.textContent = `${videolist.length + 1} сamera` + deviceid + "|" + device.label;
+
+                    li.textContent = "id: " + deviceid + "\nLabel: " + device.label + "\nfacingMode: " + device.facingMode;
+
                     videolist.appendChild(li);
                     console.log(videolist);
                 });
