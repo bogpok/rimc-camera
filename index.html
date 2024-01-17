@@ -29,7 +29,14 @@
     <!-- Controls are made in retro camera style -->
 
     
-    
+    <div class="card mx-5">
+        <div class="input-group">  
+            <!-- <input type="text" class="form-control video-source" aria-label="Video source" value="input camera:" disabled>           -->
+            <input type="text" class="form-control video-source" aria-label="Video source" id="videoSourceText" value="video src" disabled>
+            <!-- <select id="videoSource" class="form-select" disabled></select> -->
+            <button class="btn btn-secondary" id="changemedia" >  🔁  </button>
+        </div>                
+    </div>
 
     <div class="card mx-5" >
         <canvas class="card-img" id="camerabox"></canvas>        
@@ -58,14 +65,7 @@
     
     
 
-    <div class="card mx-5">
-        <div class="input-group">  
-            <!-- <input type="text" class="form-control video-source" aria-label="Video source" value="input camera:" disabled>           -->
-            <input type="text" class="form-control video-source" aria-label="Video source" id="videoSourceText" value="video src" disabled>
-            <!-- <select id="videoSource" class="form-select" disabled></select> -->
-            <button class="btn btn-secondary" id="changemedia" >  🔁  </button>
-        </div>                
-    </div>
+    
 
     <div class="select" hidden>
         <label for="videoSource">Video source: </label>

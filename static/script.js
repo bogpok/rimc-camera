@@ -174,11 +174,10 @@ function startCamera(deviceId) {
             setSourceText(videoSelect.options[videoSelect.selectedIndex].text);
         })
         .catch(error => {
-            alert("Camera error: "+err);
+            alert("Camera error: "+error);
             console.error('Error accessing camera:', error);
         });
 };
-
 
 function setSourceText(text) {
     document.getElementById('videoSourceText').value = text;
