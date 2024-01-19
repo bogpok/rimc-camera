@@ -3,78 +3,80 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RIMC MC</title>
-
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <title>Build</title>
+    <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="./static/style.css">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
-    
     
 </head>
-<body>
-    
-    <h3>Retro Image Converter Media Camera</h3>
+<body>    
+    <div class="bg-zinc-800 flex max-w-[646px] flex-col items-center px-8 py-6 rounded-2xl max-md:px-5">
+        <div class="flex items-center justify-between gap-5 mt-3">
+            <span class="text-black text-2xl whitespace-nowrap grow justify-center items-stretch my-auto py-2 rounded-xl border-[3px] border-solid border-black max-md:px-5" id="lcdtext">                
+                <p id="videoSourceText">video src</p>    
+            </span>
 
-    <div class="info">
-        <p>If you have any trouble with viewing this page, please reload the page.</p>
-    </div>
-    <!-- 1.a There is html element which represents camera
-         1.b Selector to choose device (camera) -->
+            <div class="stroke-[2px] self-stretch flex flex-col justify-center items-center"> 
+                <button id="changemedia" >
+                    <img src="./static/sync_button.png" class="" />
+                </button>                
+            </div>
 
-    <!-- 2. There is a button to take a shot -->
-
-    <!-- 3. After the shot is taken it is shown -->
-
-    <!-- 4. User can retake the shot (retake button) -->
-
-    <!-- 5. Selector to choose filter  -->
-
-    <!-- 6. Submit photo (form POST)-->
-
-    <!-- Controls are made in retro camera style -->
-
-    
-    <div class="card mx-5">
-        <div class="input-group">  
-            <!-- <input type="text" class="form-control video-source" aria-label="Video source" value="input camera:" disabled>           -->
-            <input type="text" class="form-control video-source" aria-label="Video source" id="videoSourceText" value="video src" disabled>
-            <!-- <select id="videoSource" class="form-select" disabled></select> -->
-            <button class="btn btn-secondary" id="changemedia" >  🔁  </button>
-        </div>                
-    </div>
-
-    <div class="card mx-5" >
-        <canvas class="card-img" id="camerabox"></canvas>        
-    </div>
-
-    <!-- <canvas id="camerabox"></canvas> -->
-    <div class="card-group mx-5">
-        <div class="card ">
-            <button class="btn btn-secondary" id="retake" onclick="retake()" disabled>◀◀</button>   
         </div>
-        <div class="card ">
-            <button class="btn btn-secondary" id="take">⚫</button>
-        </div>
-    </div>    
-    <div class="card mx-5 d-flex justify-content-center">
-        <form method="POST">
-            <button class="btn btn-secondary" id="tolab">
-                <p>OK</p>
-            </button>
-        </form>
-    </div>
 
-    
+        <div class="bg-black self-stretch flex flex-col justify-center items-stretch mt-7 px-14 py-7 rounded-3xl max-md:max-w-full max-md:px-5">
+            <div class="blur-[0.5px] bg-slate-400 flex shrink-0 flex-col">
+                <canvas class="card-img" id="camerabox"></canvas>    
+            </div>
+        </div>
+        
+        <div class="w-[404px] max-w-full ml-4 mt-12 self-start max-md:ml-2.5 max-md:mt-10">
+            <div class="gap-5 flex max-md:flex-col max-md:items-stretch max-md:gap-0">
+                <div class="flex flex-col items-stretch w-[74%] max-md:w-full max-md:ml-0">
+                    <div class="flex grow flex-col items-end max-md:mt-10">
+                        <div class="flex w-[163px] max-w-full items-stretch gap-0">
+                            <div class="bg-stone-900 flex grow basis-[0%] flex-col justify-center items-stretch pr-2 rounded-md">
+                                <div class="border shadow-sm bg-stone-700 z-[1] flex shrink-0 h-[53px] flex-col rounded-md border-solid border-black"></div>
+                            </div>
+                            <button class="text-white text-2xl whitespace-nowrap bg-black grow justify-center items-stretch pl-6 pr-3.5 py-3.5 rounded-md self-start max-md:pl-5" id="retake" onclick="retake()">retake</button>
+                        </div>
+                        
+                        <!-- <div class="flex-col fill-zinc-300 stroke-[2px] stroke-black overflow-hidden relative flex aspect-square w-[184px] justify-center items-center mt-11 py-2 self-start max-md:mt-10">                            
+                            <img src="./static/dial.png">
+                        </div> -->
+                    </div>
+                </div>
+
+                <div class="flex flex-col items-stretch w-[26%] ml-5 max-md:w-full max-md:ml-0">
+                    <div class="flex flex-col items-center max-md:mt-10">
+                        <button class="btn btn-secondary" id="take">
+                            <img src="./static/shutter_button.png" id="shutter"/>
+                            <img src="./static/shutter_button_pressed.png" id="shutter_pressed" hidden/>
+                        </button>
+                        
+
+                        <span class="text-white text-4xl whitespace-nowrap stroke-[1px] self-stretch justify-center items-stretch mt-20 pl-5 pr-6 py-8 rounded-[50%] max-md:mt-10 max-md:pr-5">
+                            <form method="POST">
+                                <button id="ok_button">
+                                    <img src="./static/ok_button.png">
+                                </button>        
+                            </form>                    
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <div class="select" hidden>
         <label for="videoSource">Video source: </label>
         <select id="videoSource"></select>
     </div>
-    
-    
 
     <img id="snap" hidden>   
 
     <script src="./static/script.js"></script>
 </body>
 </html>
+
+
+

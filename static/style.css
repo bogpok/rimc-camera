@@ -2,3 +2,14 @@
     text-align: center;
     font-weight: bold;
 }
+
+@font-face { 
+    font-family: Digital; src: url('./DS-DIGIT.TTF'); 
+} 
+
+
+#lcdtext {
+    font-family: Digital;
+    background-color: #7E8671;
+    text-shadow: 1px 1px #444444;
+}

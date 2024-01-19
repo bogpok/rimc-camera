@@ -26,22 +26,7 @@ const main = () => {
     getAvailableMedia();    
     
     // TAKE Button    
-    take_button.addEventListener('click', function() {
-        // take snapshot
-        CONTEXT.drawImage(VIDEO,
-            SIZE.x, SIZE.y,
-            SIZE.width, SIZE.height);
-        let image_data_url = CANVAS.toDataURL('image/jpeg');
-    
-        // data url of the image
-        // console.log(image_data_url);
-        
-        const snap = document.getElementById("snap");
-        snap.src = image_data_url;
-        snap.removeAttribute("hidden"); 
-
-        toggleVideoPlayback();
-    });
+    take_button.addEventListener('click', shutterRelease);
 
     // CHANGE MEDIA / NEXT Button    
     nextButton.addEventListener('click', () => {
@@ -55,12 +40,28 @@ const main = () => {
         videoSelect.selectedIndex = nextIndex;
 
         startCamera(videoSelect.value);
-    });
-
-
-    startCarousel();
-
+    });   
 };
+
+const shutterRelease = () => {
+    // take snapshot
+    CONTEXT.drawImage(VIDEO,
+        SIZE.x, SIZE.y,
+        SIZE.width, SIZE.height);
+    let image_data_url = CANVAS.toDataURL('image/jpeg');
+
+    // data url of the image
+    // console.log(image_data_url);
+    
+    const snap = document.getElementById("snap");
+    snap.src = image_data_url;
+    snap.removeAttribute("hidden"); 
+
+    toggleVideoPlayback();
+    document.getElementById("shutter").setAttribute("hidden", "true");
+    document.getElementById("shutter_pressed").removeAttribute("hidden");
+    take_button.setAttribute("disabled", true);
+}
 
 const handleResize = () => {
     let resizer=SCALER*Math.min(
@@ -87,9 +88,14 @@ const updateCanvas = () => {
 };
 
 const retake = () => {
+
     const snap = document.getElementById("snap");
     snap.setAttribute("hidden", "true");
+
     toggleVideoPlayback();
+    document.getElementById("shutter").removeAttribute("hidden");
+    document.getElementById("shutter_pressed").setAttribute("hidden", "true");
+    take_button.removeAttribute("disabled");
 };
 
 const toggleVideoPlayback = () => {
@@ -183,5 +189,5 @@ function startCamera(deviceId) {
 };
 
 function setSourceText(text) {
-    document.getElementById('videoSourceText').value = text;
+    document.getElementById('videoSourceText').innerHTML = text;
 };
