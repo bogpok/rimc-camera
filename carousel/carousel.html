@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+</head>
+<body>
+    <style>
+        body {
+    background:#1d1d1d;
+    font-family:sans-serif;
+}
+
+.wrapper {
+    width:200px;
+    height:250px;
+    position:relative;
+    margin:auto;
+    overflow:hidden;
+}
+
+.wrapper::after {
+    width:198px;
+    height:248px;
+    content:"";
+    position:absolute;
+    border:solid 1px white;
+}
+
+.box {
+    width:200px;
+    height:50px;
+    position:absolute;
+    background-color:#f38630;
+    font-size:25px;
+    line-height:50px;
+    text-align:center;  
+}
+
+
+
+.boxes {
+    position:relative;
+    top:-50px;
+}
+
+.nav {
+    position:relative;
+    text-align:center;
+
+    color:white;
+    font-size:20px;
+    margin:20px 0;
+}
+    </style>
+
+<div class="nav">
+    <label>
+      <input type="checkbox" name="overflow" id="overflow" value="1" /> Show overflow
+    </label>
+</div>
+
+<div class="wrapper">
+    <div class="boxes">
+        <div class="box box1">10 - 24</div>
+        <div class="box box2">25 - 39</div>
+        <div class="box box3">40 - 59</div>
+        <div class="box box4">60 - 84</div>
+        <div class="box box5">85 - 124</div>
+        <div class="box box6">125 - 169</div>
+        <div class="box box7">170 - 249</div>
+        <div class="box box8">250 +</div>
+    </div>
+</div>
+
+
+<script>
+    function startCarousel() {
+    const selectedValue = document.getElementById('selectedValue');
+    const carousel = document.getElementById('carousel');
+
+    // Example options
+    const options = ['Option 1', 'Option 2', 'Option 3', 'Option 4'];
+
+    // Dynamically create carousel options
+    options.forEach((option, index) => {
+        const angle = index * (360 / options.length);
+        const optionDiv = document.createElement('div');
+        optionDiv.textContent = option;
+        optionDiv.style.transform = `rotate(${angle}deg) translate(-50%, -50%)`;
+        carousel.appendChild(optionDiv);
+    });
+}
+
+
+// var $overflow = $("#overflow");
+
+var proxy = document.createElement("div");
+
+var progress = 0;
+var yMin = 0;
+var yMax = 0;
+var boxCount = $(".box").length;
+var boxHeight = $(".box").height();
+var size = boxCount * boxHeight;
+
+//initially position, scale and set opacity
+TweenMax.set(".box", {
+    y: function (i) {
+        return i * boxHeight;
+    },
+    scale: function (i) {
+        // i = 3 is 100%
+        return 1 - (Math.abs(i - 3) * 2 / 10);
+    },
+    opacity: function (i) {
+        // i = 3 is 100%
+        return 1 - (Math.abs(i - 3) * 2 / 10);
+    }
+});
+
+
+var animation = new TimelineMax({ repeat: -1, paused: true });
+animation.to(".box", 5, {
+    ease: Linear.easeNone,
+    y: "+=" + size, //move each box 500px to bottom
+    modifiers: {
+        y: function (y) {
+            return y % size; //force y value to be between 0 and 500 using modulus
+        }
+    }
+})
+    .fromTo(".box1", (3 / 8 * 5), { scale: 0.4, opacity: 0.4 }, { ease: Linear.easeNone, scale: 1, opacity: 1 }, 0)
+    .to(".box1", (5 / 8 * 5), { scale: 0, opacity: 0, ease: Linear.easeNone }, (3 / 8 * 5))
+
+    .fromTo(".box2", (2 / 8 * 5), { scale: 0.6, opacity: 0.6 }, { ease: Linear.easeNone, scale: 1, opacity: 1 }, 0)
+    .to(".box2", (5 / 8 * 5), { scale: 0, opacity: 0, ease: Linear.easeNone }, (2 / 8 * 5))
+    .fromTo(".box2", (1 / 8 * 5), { scale: 0.4, opacity: 0.4 }, { ease: Linear.easeNone, scale: 0.6, opacity: 0.6 }, (7 / 8 * 5))
+
+    .fromTo(".box3", (1 / 8 * 5), { scale: 0.8, opacity: 0.8 }, { ease: Linear.easeNone, scale: 1, opacity: 1 }, 0)
+    .to(".box3", (5 / 8 * 5), { scale: 0, opacity: 0, ease: Linear.easeNone, }, (1 / 8 * 5))
+    .fromTo(".box3", (2 / 8 * 5), { scale: 0.4, opacity: 0.4 }, { ease: Linear.easeNone, scale: 0.8, opacity: 0.8 }, (6 / 8 * 5))
+
+    .fromTo(".box4", (5 / 8 * 5), { scale: 1, opacity: 1 }, { ease: Linear.easeNone, scale: 0, opacity: 0 }, 0)
+    .fromTo(".box4", (3 / 8 * 5), { scale: 0.4, opacity: 0.4 }, { ease: Linear.easeNone, scale: 1, opacity: 1 }, (5 / 8 * 5))
+
+    .fromTo(".box5", (4 / 8 * 5), { scale: 0.8, opacity: 0.8 }, { ease: Linear.easeNone, scale: 0, opacity: 0 }, 0)
+    .fromTo(".box5", (3 / 8 * 5), { scale: 0.4, opacity: 0.4 }, { ease: Linear.easeNone, scale: 1, opacity: 1 }, (4 / 8 * 5))
+    .to(".box5", (1 / 8 * 5), { scale: 0.8, opacity: 0.8, ease: Linear.easeNone }, (7 / 8 * 5))
+
+    .fromTo(".box6", (3 / 8 * 5), { scale: 0.6, opacity: 0.6 }, { ease: Linear.easeNone, scale: 0, opacity: 0 }, 0)
+    .fromTo(".box6", (3 / 8 * 5), { scale: 0.4, opacity: 0.4 }, { ease: Linear.easeNone, scale: 1, opacity: 1 }, (3 / 8 * 5))
+    .to(".box6", (2 / 8 * 5), { scale: 0.6, opacity: 0.6, ease: Linear.easeNone }, (6 / 8 * 5))
+
+    .fromTo(".box7", (2 / 8 * 5), { scale: 0.4, opacity: 0.4 }, { ease: Linear.easeNone, scale: 0, opacity: 0 }, 0)
+    .fromTo(".box7", (3 / 8 * 5), { scale: 0.4, opacity: 0.4 }, { ease: Linear.easeNone, scale: 1, opacity: 1 }, (2 / 8 * 5))
+    .to(".box7", (3 / 8 * 5), { scale: 0.4, opacity: 0.4, ease: Linear.easeNone }, (5 / 8 * 5))
+
+    .fromTo(".box8", (1 / 8 * 5), { scale: 0.2, opacity: 0.2 }, { ease: Linear.easeNone, scale: 0, opacity: 0 }, 0)
+    .fromTo(".box8", (3 / 8 * 5), { scale: 0.4, opacity: 0.4 }, { ease: Linear.easeNone, scale: 1, opacity: 1 }, (1 / 8 * 5))
+    .to(".box8", (4 / 8 * 5), { scale: 0.2, opacity: 0.2, ease: Linear.easeNone }, (4 / 8 * 5));
+
+Draggable.create(proxy, {
+    type: "y",
+    trigger: ".wrapper",
+    throwProps: true,
+    onDragStart: setRange,
+    onDrag: updateProgress,
+    onThrowUpdate: updateProgress
+});
+
+//toggle overflow
+$overflow.on("change", applyOverflow);
+
+function setRange() {
+
+    // We really don't care what the draggable values are. 
+    // We just need a starting point to use in the normalize function
+    // to figure out how much change there has been
+    yMin = this.y;
+    yMax = yMin + size;
+    progress = animation.progress();
+}
+
+function updateProgress() {
+    var norm = normalize(this.y, yMin, yMax);
+    animation.progress(progress + norm);
+}
+
+function normalize(value, min, max) {
+    return (value - min) / (max - min);
+}
+
+function applyOverflow() {
+    if ($overflow.prop("checked")) {
+        TweenLite.set(".wrapper", { overflow: "visible" });
+    } else {
+        TweenLite.set(".wrapper", { overflow: "hidden" });
+    }
+}
+
+animation.progress(1).progress(0);
+</script>
+</body>
+</html>

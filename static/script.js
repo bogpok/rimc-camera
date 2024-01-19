@@ -57,6 +57,9 @@ const main = () => {
         startCamera(videoSelect.value);
     });
 
+
+    startCarousel();
+
 };
 
 const handleResize = () => {
