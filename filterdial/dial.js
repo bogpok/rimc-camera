@@ -111,7 +111,8 @@ class Knob extends Control {
             
             this.updatePosition(this.ang);
             this.ang_prev.set(this.ang.rad);
-            
+
+            this.onstop(this.ang.deg);            
 
             window.removeEventListener('mousemove', move);        
             window.removeEventListener('mouseup', stop);
@@ -130,7 +131,14 @@ class Knob extends Control {
         // rotates from absolute position
         this.set_rotate(this.ang.deg);        
     }    
-    
+    onstop(ang_deg){
+        const dialvalue = document.getElementsByName("dialvalue")[0];
+        if (dialvalue) {
+            dialvalue.value = knobrecipes.which_item_short(ang_deg);
+        } else {
+            console.error("Element with name 'dialvalue' not found.");
+        }
+    }
 }
 
 class KnobCollection {
@@ -150,6 +158,10 @@ class KnobCollection {
         if (ang_deg < 0) ang_deg = 360 + ang_deg;         
         const item_n = 5 - Math.floor(ang_deg / 360 * this.N)
         return item_n;
+    }
+    which_item_short(ang_deg){
+        let i = this.which_item(ang_deg);
+        return this.link[i].short;
     }
     get_item_coline_ang(ang_deg){
         let i = this.which_item(ang_deg);

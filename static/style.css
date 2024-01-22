@@ -7,9 +7,56 @@
     font-family: Digital; src: url('./DS-DIGIT.TTF'); 
 } 
 
-
 #lcdtext {
     font-family: Digital;
     background-color: #7E8671;
     text-shadow: 1px 1px #444444;
+}
+
+
+#retake_button {
+    position: absolute; 
+    top: 0; 
+
+    left: 0; 
+    /* transform: translateX(-20%);  */
+    
+    z-index: 2;
+    transition: left 0.5s ease;
+}
+
+#retakecovertop {
+    z-index: 3;
+}
+
+#retakecoverbottom {
+    position: absolute; 
+    top: 0; 
+    left: 70%; 
+    transform: translateX(-50%); 
+    z-index: 1;
+}
+
+#take,
+#ok_button {
+    max-width: 80px;
+}
+
+#changemedia {
+    max-width: 70px;
+}
+
+#okdiv {
+    display: flex;
+    align-items: center;
+    justify-content: center;    
+}
+
+
+/* dial */
+
+#dial {
+    max-width: 160px;
+    /* width: 50%; 
+    height: 50% */
 }

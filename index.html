@@ -3,20 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Build</title>
+    <title>rimcmc2</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="./static/style.css">
     
 </head>
 <body>    
-    <div class="bg-zinc-800 flex max-w-[646px] flex-col items-center px-8 py-6 rounded-2xl max-md:px-5">
+    <div class="bg-zinc-800 flex max-w-[650px] flex-col items-center px-8 py-6 rounded-2xl max-md:px-5">
         <div class="flex items-center justify-between gap-5 mt-3">
             <span class="text-black text-2xl whitespace-nowrap grow justify-center items-stretch my-auto py-2 rounded-xl border-[3px] border-solid border-black max-md:px-5" id="lcdtext">                
                 <p id="videoSourceText">video src</p>    
             </span>
 
-            <div class="stroke-[2px] self-stretch flex flex-col justify-center items-center"> 
-                <button id="changemedia" >
+            <div class="self-stretch flex flex-col justify-center items-center"> 
+                <button id="changemedia">
                     <img src="./static/sync_button.png" class="" />
                 </button>                
             </div>
@@ -27,45 +27,47 @@
             <div class="blur-[0.5px] bg-slate-400 flex shrink-0 flex-col">
                 <canvas class="card-img" id="camerabox"></canvas>    
             </div>
-        </div>
-        
-        <div class="w-[404px] max-w-full ml-4 mt-12 self-start max-md:ml-2.5 max-md:mt-10">
-            <div class="gap-5 flex max-md:flex-col max-md:items-stretch max-md:gap-0">
-                <div class="flex flex-col items-stretch w-[74%] max-md:w-full max-md:ml-0">
-                    <div class="flex grow flex-col items-end max-md:mt-10">
-                        <div class="flex w-[163px] max-w-full items-stretch gap-0">
-                            <div class="bg-stone-900 flex grow basis-[0%] flex-col justify-center items-stretch pr-2 rounded-md">
-                                <div class="border shadow-sm bg-stone-700 z-[1] flex shrink-0 h-[53px] flex-col rounded-md border-solid border-black"></div>
-                            </div>
-                            <button class="text-white text-2xl whitespace-nowrap bg-black grow justify-center items-stretch pl-6 pr-3.5 py-3.5 rounded-md self-start max-md:pl-5" id="retake" onclick="retake()">retake</button>
-                        </div>
-                        
-                        <!-- <div class="flex-col fill-zinc-300 stroke-[2px] stroke-black overflow-hidden relative flex aspect-square w-[184px] justify-center items-center mt-11 py-2 self-start max-md:mt-10">                            
-                            <img src="./static/dial.png">
-                        </div> -->
-                    </div>
-                </div>
+        </div>        
 
-                <div class="flex flex-col items-stretch w-[26%] ml-5 max-md:w-full max-md:ml-0">
-                    <div class="flex flex-col items-center max-md:mt-10">
-                        <button class="btn btn-secondary" id="take">
-                            <img src="./static/shutter_button.png" id="shutter"/>
-                            <img src="./static/shutter_button_pressed.png" id="shutter_pressed" hidden/>
-                        </button>
-                        
-
-                        <span class="text-white text-4xl whitespace-nowrap stroke-[1px] self-stretch justify-center items-stretch mt-20 pl-5 pr-6 py-8 rounded-[50%] max-md:mt-10 max-md:pr-5">
-                            <form method="POST">
-                                <button id="ok_button">
-                                    <img src="./static/ok_button.png">
-                                </button>        
-                            </form>                    
-                        </span>
-                    </div>
+        <div class="flex w-full">
+            <div class="flex-1 p-4 text-left">
+                <div class="flex" id="retakecontainer" style="position: relative;">            
+                    <div class="shadow-sm bg-stone-500 flex h-[50px] w-[100px] flex-col rounded-md border border-solid border-black" id="retakecovertop"></div>
+                    <button class="text-white text-2xl bg-black justify-center rounded-md" id="retake_button" onclick="retake()">retake</button>
+                    <div class="bg-stone-900 flex-grow flex-col items-stretch pr-4 rounded-md" id="retakecoverbottom"></div>
                 </div>
             </div>
-        </div>
-    </div>
+
+            <div class="flex-1 p-4 text-center">
+                <button id="take">
+                    <img src="./static/shutter_button.png" id="shutter"/>
+                    <img src="./static/shutter_button_pressed.png" id="shutter_pressed" hidden/>
+                </button>
+            </div>
+        </div>       
+
+        <div class="flex w-full">
+            <div class="flex-1 p-4 text-center">
+                
+                <!-- <div class=""> -->
+                    <div style="width: 36px; height: 1px; position: absolute; box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25); border: 2px white solid" id="dialmark"></div>
+                    <img id="dial" src="./static/dial.png" />
+                <!-- </div> -->
+
+            </div>
+            <div class="flex-1 p-4" id="okdiv">
+                <form method="POST">
+                    <input name="imgsrcurl" hidden>
+                    <input name="dialvalue" hidden>
+                    <button id="ok_button">
+                        <img src="./static/ok_button.png" disabled>
+                    </button>        
+                </form>    
+            </div>
+
+        </div>        
+    </div>    
+
 
     <div class="select" hidden>
         <label for="videoSource">Video source: </label>
@@ -73,8 +75,14 @@
     </div>
 
     <img id="snap" hidden>   
+    
 
+    <!-- SCRIPTS -->
+    <script src="./filterdial/dial.js"></script>
+    <script src="./filterdial/script.js"></script>
+    
     <script src="./static/script.js"></script>
+    <!-- SCRIPTS -->
 </body>
 </html>
 

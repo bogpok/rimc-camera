@@ -28,7 +28,6 @@ recipes.forEach(recipe=>{
 })
 
 knobrecipes = new KnobCollection(recipes);
-console.log(knobrecipes)
 
 const dial = new Knob(document.getElementById("dial"));
 

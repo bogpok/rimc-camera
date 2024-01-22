@@ -13,7 +13,6 @@ let videoSelect = null;
 let nextButton = null;
 
 const main = () => {
-    console.log("loaded");
 
     CANVAS=document.getElementById("camerabox");
     CONTEXT=CANVAS.getContext("2d");  
@@ -41,6 +40,10 @@ const main = () => {
 
         startCamera(videoSelect.value);
     });   
+
+    set_retake_slider();
+
+    document.getElementsByName("dialvalue")[0].value = knobrecipes.link[0].short;
 };
 
 const shutterRelease = () => {
@@ -51,7 +54,7 @@ const shutterRelease = () => {
     let image_data_url = CANVAS.toDataURL('image/jpeg');
 
     // data url of the image
-    // console.log(image_data_url);
+    document.getElementsByName("imgsrcurl")[0].value = image_data_url;
     
     const snap = document.getElementById("snap");
     snap.src = image_data_url;
@@ -61,6 +64,8 @@ const shutterRelease = () => {
     document.getElementById("shutter").setAttribute("hidden", "true");
     document.getElementById("shutter_pressed").removeAttribute("hidden");
     take_button.setAttribute("disabled", true);
+
+    move_retake_button();
 }
 
 const handleResize = () => {
@@ -75,8 +80,7 @@ const handleResize = () => {
     CANVAS.width=SIZE.width;
     CANVAS.height=SIZE.height;
 
-    // SIZE.x = window.innerWidth/2 - SIZE.width/2;
-    // SIZE.y = window.innerHeight/2 - SIZE.height/2;
+    resize_adapt_dial();
 };
 
 const updateCanvas = () => {    
@@ -88,7 +92,6 @@ const updateCanvas = () => {
 };
 
 const retake = () => {
-
     const snap = document.getElementById("snap");
     snap.setAttribute("hidden", "true");
 
@@ -96,15 +99,16 @@ const retake = () => {
     document.getElementById("shutter").removeAttribute("hidden");
     document.getElementById("shutter_pressed").setAttribute("hidden", "true");
     take_button.removeAttribute("disabled");
+    move_retake_button(true);
 };
 
 const toggleVideoPlayback = () => {
     if (VIDEO.paused) {
         VIDEO.play();
-        document.getElementById("retake").setAttribute("disabled", true);
+        document.getElementById("retake_button").setAttribute("disabled", true);
     } else {
         VIDEO.pause();
-        document.getElementById("retake").removeAttribute("disabled");
+        document.getElementById("retake_button").removeAttribute("disabled");
     }
 };
 
@@ -129,11 +133,10 @@ function getAvailableMedia() {
 
                 option.text = `src: ${label} [${videoSelect.options.length + 1}]`
                 
-                // device.label || `Camera ${videoSelect.options.length + 1}`;
                 videoSelect.add(option);
             });
 
-            console.log(videoSelect)
+            
             // Add event listener to update camera stream when selection changes
             videoSelect.addEventListener('change', () => {
                 const selectedDeviceId = videoSelect.value;
@@ -191,3 +194,44 @@ function startCamera(deviceId) {
 function setSourceText(text) {
     document.getElementById('videoSourceText').innerHTML = text;
 };
+
+
+const set_retake_slider = () => {
+    const retakewidth = 100;
+
+    const retakecontainer = document.getElementById("retakecontainer");
+    const retakecontRect = retakecontainer.getBoundingClientRect();
+    
+    const canvrect = CANVAS.getBoundingClientRect();    
+
+    const retake_button = document.getElementById("retake_button")
+    retake_button.style.width = retakewidth + 'px';
+    retake_button.style.height = retakecontRect.height*0.9 + 'px'; 
+    
+    move_retake_button(true);
+}
+
+
+const move_retake_button = (back=false) => {
+    const retakecontainer = document.getElementById("retakecontainer");
+    const retakecontRect = retakecontainer.getBoundingClientRect();
+
+    const retake_button = document.getElementById("retake_button");
+
+    if (back) retake_button.style.left = retakecontRect.left - 10 + 'px';
+    else retake_button.style.left = retakecontRect.left + 48 + 'px';
+}
+
+
+
+
+const resize_adapt_dial = () => {
+    
+    mark.set_topleft([
+        dial.get_rect().right - dial_mark_ratio*64,
+        dial.get_rect().top + dial.get_rect().height / 2
+    ])
+    
+}
+
+window.addEventListener('resize', resize_adapt_dial);
