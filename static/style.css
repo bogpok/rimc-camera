@@ -53,6 +53,9 @@
 }
 
 
+
+
+
 /* dial */
 
 #dial,
@@ -60,4 +63,20 @@
     max-width: 160px;
     /* width: 50%; 
     height: 50% */
+}
+
+#dialbox {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;    
+}
+
+#dialmark2 {
+    height: 1px; box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25); border: 2px white solid;
+    min-width: 20px; 
+    position: relative; 
+    top: 0; 
+    left: -10%; 
+    
+    /* transform: translateX(-50%);  */
 }

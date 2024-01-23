@@ -93,7 +93,7 @@ const handleResize = () => {
     CANVAS.width=SIZE.width;
     CANVAS.height=SIZE.height;
 
-    resize_adapt_dial();
+    adapt_dial();
 };
 
 const updateCanvas = () => {    
@@ -101,7 +101,7 @@ const updateCanvas = () => {
         SIZE.x, SIZE.y,
         SIZE.width, SIZE.height
     );    
-    resize_adapt_dial();
+    adapt_dial();
     window.requestAnimationFrame(updateCanvas);
 };
 
@@ -235,7 +235,7 @@ const move_retake_button = (back=false) => {
 
 
 
-const resize_adapt_dial = () => {    
+const adapt_dial = () => {    
     const dialboxRect = document.getElementById('dialbox').getBoundingClientRect();
     const tr = [
         dialboxRect.right,
@@ -244,4 +244,6 @@ const resize_adapt_dial = () => {
     mark.set_topright(tr);  
 }
 
-window.addEventListener('resize', resize_adapt_dial);
+window.addEventListener('resize', adapt_dial);
+
+window.addEventListener('scroll', adapt_dial);
