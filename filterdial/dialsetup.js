@@ -31,10 +31,10 @@ knobrecipes = new KnobCollection(recipes);
 
 const dial = new Knob(document.getElementById("dial"));
 
-const dial_mark_ratio = 36 / 245;
-const mark = new Control(document.getElementById("dialmark"));
-mark.set_topleft([
-    dial.rect.right - dial_mark_ratio*64,
-    dial.rect.top + dial.rect.height / 2
-])
-mark.set_width(dial_mark_ratio*dial.get_rect().width);
+// const dial_mark_ratio = 36 / 245;
+// const mark = new Control(document.getElementById("dialmark"));
+// mark.set_topleft([
+//     dial.rect.right - dial_mark_ratio*64,
+//     dial.rect.top + dial.rect.height / 2
+// ])
+// mark.set_width(dial_mark_ratio*dial.get_rect().width);
