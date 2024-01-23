@@ -57,6 +57,11 @@ class Control {
         this.el.style.left = xy[0] + 'px';
         this.update_center();
     }
+    set_topright(xy){
+        this.el.style.top = xy[1] + 'px';
+        this.el.style.right = xy[0] + 'px';
+        this.update_center();
+    }
     set_width(width){
         this.el.style.width = width + 'px';
     }
@@ -82,6 +87,7 @@ class Knob extends Control {
         this.common_start(startX, startY);
     }
     touch_drag_start(e) {
+        e.preventDefault();
         if (e.targetTouches.length === 1) {
             const touch = e.targetTouches[0];
             const startX = touch.clientX;
@@ -96,6 +102,7 @@ class Knob extends Control {
         // By using arrow functions for move and stop, the lexical scoping of 
         // arrow functions will capture the this value from the surrounding scope
         const move = (e) => {
+            e.preventDefault();
             const currentX = e.clientX || e.touches[0].clientX;
             const currentY = e.clientY || e.touches[0].clientY;
             const mang_curr = new Angle(getRelativeAngle([currentX, currentY], center));

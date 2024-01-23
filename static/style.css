@@ -55,7 +55,8 @@
 
 /* dial */
 
-#dial {
+#dial,
+#dialbox {
     max-width: 160px;
     /* width: 50%; 
     height: 50% */

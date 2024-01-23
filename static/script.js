@@ -10,7 +10,7 @@ let SCALER = 1;
 let SIZE={x:0,y:0,width:0,height:0};
 
 let videoSelect = null;
-let nextButton = null;
+let changeMeButton = null;
 
 const main = () => {
 
@@ -19,7 +19,7 @@ const main = () => {
 
     videoSelect = document.querySelector('select#videoSource');
     take_button = document.getElementById("take");
-    nextButton = document.getElementById('changemedia');
+    changeMeButton = document.getElementById('changemedia');
 
     // populate html selector and start camera
     getAvailableMedia();    
@@ -28,23 +28,23 @@ const main = () => {
     take_button.addEventListener('click', shutterRelease);
 
     // CHANGE MEDIA / NEXT Button    
-    nextButton.addEventListener('click', () => {
-        // Get the current selected index
-        const currentIndex = videoSelect.selectedIndex;
-
-        // Calculate the next index, and loop back to the beginning if necessary
-        const nextIndex = (currentIndex + 1) % videoSelect.options.length;
-
-        // Set the selectedIndex to the next index
-        videoSelect.selectedIndex = nextIndex;
-
-        startCamera(videoSelect.value);
-    });   
+    changeMeButton.addEventListener('click', changemedia);   
 
     set_retake_slider();
 
     document.getElementsByName("dialvalue")[0].value = knobrecipes.link[0].short;
 };
+
+const changemedia = () => {
+    // Get the current selected index
+    const currentIndex = videoSelect.selectedIndex;
+    // Calculate the next index, and loop back to the beginning if necessary
+    const nextIndex = (currentIndex + 1) % videoSelect.options.length;
+    // Set the selectedIndex to the next index
+    videoSelect.selectedIndex = nextIndex;
+    // launch selected camera
+    startCamera(videoSelect.value);
+}
 
 const shutterRelease = () => {
     // take snapshot
@@ -66,6 +66,19 @@ const shutterRelease = () => {
     take_button.setAttribute("disabled", true);
 
     move_retake_button();
+
+    changeMeButton.setAttribute("disabled", true);
+}
+
+const shutterLoad = () => {
+    toggleVideoPlayback();
+    document.getElementById("shutter").removeAttribute("hidden");
+    document.getElementById("shutter_pressed").setAttribute("hidden", "true");
+    take_button.removeAttribute("disabled");
+
+    move_retake_button(true);
+
+    changeMeButton.removeAttribute("disabled");
 }
 
 const handleResize = () => {
@@ -88,6 +101,7 @@ const updateCanvas = () => {
         SIZE.x, SIZE.y,
         SIZE.width, SIZE.height
     );    
+    resize_adapt_dial();
     window.requestAnimationFrame(updateCanvas);
 };
 
@@ -95,11 +109,7 @@ const retake = () => {
     const snap = document.getElementById("snap");
     snap.setAttribute("hidden", "true");
 
-    toggleVideoPlayback();
-    document.getElementById("shutter").removeAttribute("hidden");
-    document.getElementById("shutter_pressed").setAttribute("hidden", "true");
-    take_button.removeAttribute("disabled");
-    move_retake_button(true);
+    shutterLoad();
 };
 
 const toggleVideoPlayback = () => {
@@ -155,7 +165,7 @@ function getAvailableMedia() {
                 startCamera(defaultDeviceId);
 
                 if (videoDevices.length == 1) {
-                    nextButton.setAttribute("disabled", true)
+                    changeMeButton.setAttribute("disabled", true)
                 }
             }
         })
@@ -225,13 +235,13 @@ const move_retake_button = (back=false) => {
 
 
 
-const resize_adapt_dial = () => {
-    
-    mark.set_topleft([
-        dial.get_rect().right - dial_mark_ratio*64,
-        dial.get_rect().top + dial.get_rect().height / 2
-    ])
-    
+const resize_adapt_dial = () => {    
+    const dialboxRect = document.getElementById('dialbox').getBoundingClientRect();
+    const tr = [
+        dialboxRect.right,
+        dialboxRect.top + dialboxRect.height / 2
+    ]
+    mark.set_topright(tr);  
 }
 
 window.addEventListener('resize', resize_adapt_dial);

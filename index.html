@@ -9,7 +9,7 @@
     
 </head>
 <body>    
-    <div class="bg-zinc-800 flex max-w-[650px] flex-col items-center px-8 py-6 rounded-2xl max-md:px-5">
+    <div class="bg-zinc-800 flex max-w-[600px] flex-col items-center px-8 py-6 rounded-2xl max-md:px-5">
         <div class="flex items-center justify-between gap-5 mt-3">
             <span class="text-black text-2xl whitespace-nowrap grow justify-center items-stretch my-auto py-2 rounded-xl border-[3px] border-solid border-black max-md:px-5" id="lcdtext">                
                 <p id="videoSourceText">video src</p>    
@@ -49,10 +49,10 @@
         <div class="flex w-full">
             <div class="flex-1 p-4 text-center">
                 
-                <!-- <div class=""> -->
+                <div class="" id="dialbox">
                     <div style="width: 36px; height: 1px; position: absolute; box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25); border: 2px white solid" id="dialmark"></div>
-                    <img id="dial" src="./static/dial.png" />
-                <!-- </div> -->
+                    <img id="dial" src="./static/dial.png" class=""/>
+                </div>
 
             </div>
             <div class="flex-1 p-4" id="okdiv">
@@ -79,7 +79,7 @@
 
     <!-- SCRIPTS -->
     <script src="./filterdial/dial.js"></script>
-    <script src="./filterdial/script.js"></script>
+    <script src="./filterdial/dialsetup.js"></script>
     
     <script src="./static/script.js"></script>
     <!-- SCRIPTS -->
