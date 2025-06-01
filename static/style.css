@@ -13,7 +13,6 @@
     text-shadow: 1px 1px #444444;
 }
 
-
 #retake_button {
     position: absolute; 
     top: 0; 
@@ -51,10 +50,6 @@
     align-items: center;
     justify-content: center;    
 }
-
-
-
-
 
 /* dial */
 
